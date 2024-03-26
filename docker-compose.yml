@@ -1,0 +1,10 @@
+services:
+  appconfig:
+    image: public.ecr.aws/aws-appconfig/aws-appconfig-agent:2.x
+    ports:
+      - "2772:2772"
+    environment:
+      LOCAL_DEVELOPMENT_DIRECTORY: /tmp/local_configs
+      LOG_LEVEL: info
+    volumes:
+      - ./local_configs:/tmp/local_configs
