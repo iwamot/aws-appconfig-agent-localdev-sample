@@ -1,27 +1,38 @@
-# appconfig-agent-local-development-sample
+# aws-appconfig-agent-localdev-sample
+
+A sample for local development using the AWS AppConfig Agent.
 
 See: https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-retrieving-simplified-methods-local-development.html
 
 ```
 $ docker compose up -d
 
-$ curl "http://localhost:2772/applications/Mobile/environments/Development/configurations/EnableMobilePaymentsFeatureFlagConfiguration"
+$ curl "http://localhost:2772/applications/myapp/environments/myenv/configurations/myconf"
 {
-  "mobile_payment": {
-    "enabled": true,
-    "title": "Mobile payments (for orders over $5)"
-  },
-  "show_stock": {
+  "featureA": {
     "enabled": true
-  }
+  },
+  "featureB": {
+    "enabled": false
+  },
+  "featureC": true
 }
 
-$ curl "http://localhost:2772/applications/Mobile/environments/Development/configurations/EnableMobilePaymentsFeatureFlagConfiguration?flag=mobile_payment"
+$ curl "http://localhost:2772/applications/myapp/environments/myenv/configurations/myconf?flag=featureA"
 {
-    "enabled": true,
-    "title": "Mobile payments (for orders over $5)"
+    "enabled": true
   }
 
-$ curl "http://localhost:2772/applications/Mobile/environments/Development/configurations/EnableMobilePaymentsFeatureFlagConfiguration?flag=mobile_payment&flag=show_stock"
-{"mobile_payment":{"enabled":true,"title":"Mobile payments (for orders over $5)"},"show_stock":{"enabled":true}}
+$ curl "http://localhost:2772/applications/myapp/environments/myenv/configurations/myconf?flag=featureA&flag=featureB"
+{"featureA":{"enabled":true},"featureB":{"enabled":false}}
+
+$ curl "http://localhost:2772/applications/myapp/environments/myenv/configurations/myconf?flag=featureC"
+{"Details":{"Value":{"featureC":{"Problem":"NoSuchFlag"}}},"Message":"Configuration data missing one or more flag values","Reason":"InvalidParameters"}
+
+$ jq '.featureB.enabled = true' local_configs/myapp\:myenv\:myconf.json > tmp.json && mv tmp.json local_configs/myapp\:myenv\:myconf.json
+
+$ curl "http://localhost:2772/applications/myapp/environments/myenv/configurations/myconf?flag=featureB"
+{
+    "enabled": true
+  }
 ```

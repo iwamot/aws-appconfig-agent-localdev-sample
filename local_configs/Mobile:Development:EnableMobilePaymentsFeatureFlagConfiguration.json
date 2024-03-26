@@ -1,9 +1,0 @@
-{
-  "mobile_payment": {
-    "enabled": true,
-    "title": "Mobile payments (for orders over $5)"
-  },
-  "show_stock": {
-    "enabled": true
-  }
-}
